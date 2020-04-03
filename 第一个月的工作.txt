@@ -1,0 +1,124 @@
+一。三种PDB文件的格式
+
+	1.PDB format
+	比较古老的一种格式，可读性很强，但计算机很难处理，有冗长性，有错误，文件较小
+	有各种限制，如很难记述大分子，chain的数量超过62个就会出问题
+
+	每个column的含义参照：http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM
+
+	2.mmCIF format
+	可读性一般强，计算机较易于处理，有冗长性，可能会有较少错误，文件中等大小
+	优点：由于可以加入任意一种字段，方便在研究需要的时候向数据中添加字段
+
+	为了弥补PDB的缺点由已经存在的CIF记述方式为PDB做了扩展而来
+
+	有两种数据的记述方式：
+	（1）key-value方式
+	没有开始的标记
+	结束时以  #  标记
+	eg。
+	_pdbx_database_related.db_name        PDB 
+	_pdbx_database_related.db_id          3QUH 
+	_pdbx_database_related.details        . 
+	_pdbx_database_related.content_type   unspecified
+	#
+	（2）loop方式
+	以loop_ 标记开始，# 宣告结束
+	loop_
+	_database_PDB_rev.num 
+	_database_PDB_rev.date 
+	_database_PDB_rev.date_original 
+	_database_PDB_rev.status 
+	_database_PDB_rev.replaces 
+	_database_PDB_rev.mod_type 
+	1 2011-03-30 2011-02-24 ? 3QUG 0 
+	2 2012-02-15 ?          ? 3QUG 1    //对应着上面的6个数据含义，数据的值在下面列出
+	#
+	先把数据的含义写出来
+	之后，对应着上列的每一项，写明数据的值
+
+	mmCIF还可以让PDB中正规化的数据和研究者想要登录的数据共存
+	_auth_是研究者想要往数据库中登陆的数据
+	_label_是PDB正规化后的数据
+	各个字段名代表什么意思可以从mmCIF词典中查到http://mmcif.pdbj.org/dictionaries/mmcif_pdbx_v40.dic/Index/
+
+	3.PDBML
+	由XML为PDB做的扩展产生了PDBML，每一个字段比mmCIF更加细化了，文件更大，计算机处理更方便
+	（泛用性，XML验证的优异性【通过验证工具】）
+	eg。
+	   <PDBx:audit_authorCategory>
+	      <PDBx:audit_author pdbx_ordinal="1">
+	         <PDBx:name>Moriwaki, Y.</PDBx:name>
+	      </PDBx:audit_author>
+	      <PDBx:audit_author pdbx_ordinal="2">
+	         <PDBx:name>Caaveiro, J.M.M.</PDBx:name>
+	      </PDBx:audit_author>
+	      <PDBx:audit_author pdbx_ordinal="3">
+	         <PDBx:name>Tsumoto, K.</PDBx:name>
+	      </PDBx:audit_author>
+	   </PDBx:audit_authorCategory>
+
+	   <PDBx:cellCategory>
+	      <PDBx:cell entry_id="3QUG">
+	         <PDBx:Z_PDB>8</PDBx:Z_PDB>
+	         <PDBx:angle_alpha>90.000</PDBx:angle_alpha>
+	         <PDBx:angle_beta>90.000</PDBx:angle_beta>
+	         <PDBx:angle_gamma>90.000</PDBx:angle_gamma>
+	         <PDBx:length_a>49.203</PDBx:length_a>
+	         <PDBx:length_b>70.120</PDBx:length_b>
+	         <PDBx:length_c>75.422</PDBx:length_c>
+	      </PDBx:cell>
+	   </PDBx:cellCategory>
+	   <PDBx:chem_compCategory>
+	      <PDBx:chem_comp id="GLN">
+	         <PDBx:formula>C5 H10 N2 O3</PDBx:formula>
+	         <PDBx:formula_weight>146.146</PDBx:formula_weight>
+	         <PDBx:mon_nstd_flag>y</PDBx:mon_nstd_flag>
+	         <PDBx:name>GLUTAMINE</PDBx:name>
+	         <PDBx:type>L-peptide linking</PDBx:type>
+	      </PDBx:chem_comp>
+	      <PDBx:chem_comp id="LEU">
+	         <PDBx:formula>C6 H13 N O2</PDBx:formula>
+	         <PDBx:formula_weight>131.174</PDBx:formula_weight>
+	         <PDBx:mon_nstd_flag>y</PDBx:mon_nstd_flag>
+	         <PDBx:name>LEUCINE</PDBx:name>
+	         <PDBx:type>L-peptide linking</PDBx:type>
+	      </PDBx:chem_comp>
+
+
+二，原子占有率（Occupancy）：
+	晶体中原子占有率的意思，简单的讲就是在该原子所显示的位点，该原子的占有比例，范围0-100%，如果全部由一个原子占有，那么占有率就是100%，有时候晶体会出现原子的共同占据或部分占据的情况，对于共同占据，就是一个位点由2个或2个以上的原子占据，那么就会出现2个或2个以上的原子的占有率的情况，这2个或2个以上的原子的占有率加起来还是等于100%，而对于部分占据，就是该位点的原子的占有率小于100%
+三，温度因子（temperature factor）
+	温度因子（也称为温度系数或B系数）可量化每个原子的不确定性。在蛋白质晶体的典型分辨率下（无法从B值中区分出占有率），一个高的温度值反映了低的电子密度。通常温度值在30平方埃以下，说明其位置是可信的；当温度因子高于60平方埃，则表示无序。
+四。静态无序和动态无序
+
+	静态无序：分子的某些区域在不同的拷贝中有着不同的构象。
+
+	动态无序：每个分子拷贝的一些区域可能会受热而运动，它们相对于其余位置而摆动。当用液氮非常快速地冻结晶体时，大的热运动就会停止，这是进行X光衍射前的一般步骤。通常，蛋白质晶体在被X光照射时会保持在冰点以下，尽管辐照会使晶体变热，从而产生一些热运动。
+五。PDB格式中atom name的含义：
+
+	注意到, 每一行(记录)都以记录类型ATOM开始, 记录中的下一项是原子序号.
+	原子名称是ATOM记录中的第三项, 它的前一或二个字符包含原子类型的元素符号. 所有以C开始的原子名称都代表碳原子, 同理, N代表氮原子, O代表氧原子. 原子名称的下一字符为远程标识符, 表示离氨基碳原子的远近, 含义如下
+
+	A: α
+
+	B: β
+
+	G: γ
+
+	D: δ
+
+	E: ε
+
+	Z: ζ
+
+	H: η
+
+	如果需要, 原子名称的最后一个字符可以代表分支标识符.
+
+六。蛋白质的组成元素
+	组成成分：
+	蛋白质是由C（碳）、H（氢）、O（氧）、N（氮）组成，一般蛋白质可能还会含有P（磷）、S（硫）、Fe（铁）、Zn（锌）、Cu（铜）、B（硼）、Mn(锰)、I（碘）、Mo（钼）等。
+
+七。球状蛋白质
+球状蛋白质是一类蛋白质，它与纤维状蛋白质和膜蛋白共同构成按分子性状和溶解性分出的三个蛋白质子类。球状蛋白质一般呈球状，结构紧密，溶于水
