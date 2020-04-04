@@ -150,3 +150,64 @@ BiocManager::install(c("GenomicFeatures", "AnnotationDbi"))
 BiocManager::install(c("Biostrings"))
 
 接下来就按研究室教程走就可以了。
+
+九。R语言的使用
+
+(1)导入一个library
+	library(Biostrings)#导入一个库--Biostrings
+(2)比较两个DNA序列
+	s1 <- DNAString("CTAAGGGATTCCGGTAATTAGACAG")    
+	s2 <- DNAString("ATAGACCATATGTCAGTGACTGTGTAA")  #声明两个DNA序列
+	#指定了匹配和不匹配时的award和penalty
+	#baseOnly是指是否只使用基础字母表中的字母eg.A C G T
+	mat <- nucleotideSubstitutionMatrix(match = 1, mismatch = -2, baseOnly = TRUE)
+	#会自动生成一个惩罚奖赏矩阵，标注了每个字母遇到其他字母时的score
+	#上面这条语句执行后生成的矩阵：
+	#   A  C  G  T
+	#A  1 -2 -2 -2
+	#C -2  1 -2 -2
+	#G -2 -2  1 -2
+	#T -2 -2 -2  1
+	#pairwiseAlignment使用上面这个惩罚奖赏矩阵对s1和s2的相似程度进行了打分
+	pairwiseAlignment(s1, s2, substitutionMatrix = mat)
+(3)比较氨基酸序列
+	不同于上面的使用nucleotideSubstitutionMatrix生成一个奖罚矩阵
+	使用PAM或者BLOSUM矩阵来进行打分
+	s3 <- AAString("SHIMANEKEN")
+	s4 <- AAString("WAKAYAMAKEN")
+	data(BLOSUM62)                #
+	pairwiseAlignment(s3, s4, substitutionMatrix = "BLOSUM62")
+
+十。配列解析 
+比较序列的方法（对比两个序列的相似度）
+（1）dot plot方法
+（2）alignment方法（对于文本序列较为便利）
+	对于alignment方法，就是要做一件事情，
+	给定两个待比较的序列，需要找到一种对齐方法使得两个序列能够匹配最多字母（可以包含gap）
+	这个对齐就叫做Pairwise Global Alignment
+	eg.给定两个序列   TREE   vs. REED
+	可以举出两种对齐方法作为举例
+	TREE             TREE-
+	REED             -REED
+	可以看出后者显然能匹配更多的字母，所以后者是一个更优的Alignment，这个就是Pairwise Global Alignment
+
+	可以使用Needleman-Wunsch Algorithm来找到两个序列的Pairwise Global Alignment(基于动态规划)
+
+(3)得分矩阵（九 中给氨基酸序列打分的得分矩阵---PAM和BLOSUM）
+
+[1]PAM-n 得分矩阵
+基于点突变的思想，假如某两种氨基酸在自然界中替换频繁，说明自然界接受这种氨基酸替换，那么在比对中可以看作这两种氨基酸相对较可能相互替代，得分就会越高。
+
+-PAM得分矩阵基于这种思想，经过一系列的相对突变率和标准化等计算，得出了一个PAM-1得分矩阵，一个PAM就是一个变异单位，即1%的氨基酸改变了（但不代表100次PAM后所有的氨基酸都改变了，有的氨基酸可能改变多次甚至可能变回原来的氨基酸）
+-将PAM-1自乘N次便得到了PAM-N得分矩阵，PAM-N得分矩阵反映了相距N个PAM的氨基酸对之间互相替换的频率
+-针对不同的进化距离采用不同的PAM矩阵，越是相似的序列应该采用N较小的PAM矩阵
+相似度       PAM-N
+14%~27%      PAM-250
+27%~40%      PAM-120
+40%~50%      PAM-80
+60%<=        PAM60
+
+[2]BLOSUM矩阵
+- 用于产生矩阵的蛋白质家族及多肽链数目，BLOSUM比PAM多了大约20倍
+- 与PAM的计算方法不同，PAM使用了global alignment，BLOSUM使用了local alignment
+- BLOSUM后面的数字衡量了两个序列的相似程度，数字越大的BLOSUM用于越相似的序列中
