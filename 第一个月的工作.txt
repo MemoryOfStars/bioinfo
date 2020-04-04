@@ -211,3 +211,20 @@ BiocManager::install(c("Biostrings"))
 - 用于产生矩阵的蛋白质家族及多肽链数目，BLOSUM比PAM多了大约20倍
 - 与PAM的计算方法不同，PAM使用了global alignment，BLOSUM使用了local alignment
 - BLOSUM后面的数字衡量了两个序列的相似程度，数字越大的BLOSUM用于越相似的序列中
+
+十一。python复健
+-更简洁的对字典进行初始化
+                            key     value
+count_dict = {}.fromkeys(nucleotide, 0)
+用key的list和value进行初始化
+
+
+-对数组进行排序，返回从小到大排列时的元素的index（使用numpy）
+sorted_index = entropy.argsort()
+
+十二。信息论
+
+-信息量（情報量）：当一件几率事件发生时，信息量衡量了这个几率事件有多难发生
+ 计算            I(E) = -log(P(E))
+
+-信息熵计算：-ΣP(E)log(p(E)) （对全集Ω的每一个子事件计算并加和）
