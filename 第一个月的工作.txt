@@ -122,3 +122,31 @@
 
 七。球状蛋白质
 球状蛋白质是一类蛋白质，它与纤维状蛋白质和膜蛋白共同构成按分子性状和溶解性分出的三个蛋白质子类。球状蛋白质一般呈球状，结构紧密，溶于水
+
+
+八。按照研究室的教程安装R语言和bioconductor时遇到的一些问题
+
+安装时去R语言官网下载就可以安装成功
+
+安装bioconductor时因为版本更新，教程中的命令已经不起作用，提示去bioconductor官方看下载命令，记录如下：
+###
+从相应网站下载biocmanager安装包
+###
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+###
+安装biocmanager
+###
+BiocManager::install()
+
+###
+给biocmanager安装包
+###
+eg.安装 “GenomicFeatures” and “AnnotationDbi”
+BiocManager::install(c("GenomicFeatures", "AnnotationDbi"))
+
+研究室教程中安装了Biostrings这个包
+BiocManager::install(c("Biostrings"))
+
+接下来就按研究室教程走就可以了。
