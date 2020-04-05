@@ -1,0 +1,254 @@
+一。三种PDB文件的格式
+
+	1.PDB format
+	比较古老的一种格式，可读性很强，但计算机很难处理，有冗长性，有错误，文件较小
+	有各种限制，如很难记述大分子，chain的数量超过62个就会出问题
+
+	每个column的含义参照：http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM
+
+	2.mmCIF format
+	可读性一般强，计算机较易于处理，有冗长性，可能会有较少错误，文件中等大小
+	优点：由于可以加入任意一种字段，方便在研究需要的时候向数据中添加字段
+
+	为了弥补PDB的缺点由已经存在的CIF记述方式为PDB做了扩展而来
+
+	有两种数据的记述方式：
+	（1）key-value方式
+	没有开始的标记
+	结束时以  #  标记
+	eg。
+	_pdbx_database_related.db_name        PDB 
+	_pdbx_database_related.db_id          3QUH 
+	_pdbx_database_related.details        . 
+	_pdbx_database_related.content_type   unspecified
+	#
+	（2）loop方式
+	以loop_ 标记开始，# 宣告结束
+	loop_
+	_database_PDB_rev.num 
+	_database_PDB_rev.date 
+	_database_PDB_rev.date_original 
+	_database_PDB_rev.status 
+	_database_PDB_rev.replaces 
+	_database_PDB_rev.mod_type 
+	1 2011-03-30 2011-02-24 ? 3QUG 0 
+	2 2012-02-15 ?          ? 3QUG 1    //对应着上面的6个数据含义，数据的值在下面列出
+	#
+	先把数据的含义写出来
+	之后，对应着上列的每一项，写明数据的值
+
+	mmCIF还可以让PDB中正规化的数据和研究者想要登录的数据共存
+	_auth_是研究者想要往数据库中登陆的数据
+	_label_是PDB正规化后的数据
+	各个字段名代表什么意思可以从mmCIF词典中查到http://mmcif.pdbj.org/dictionaries/mmcif_pdbx_v40.dic/Index/
+
+	3.PDBML
+	由XML为PDB做的扩展产生了PDBML，每一个字段比mmCIF更加细化了，文件更大，计算机处理更方便
+	（泛用性，XML验证的优异性【通过验证工具】）
+	eg。
+	   <PDBx:audit_authorCategory>
+	      <PDBx:audit_author pdbx_ordinal="1">
+	         <PDBx:name>Moriwaki, Y.</PDBx:name>
+	      </PDBx:audit_author>
+	      <PDBx:audit_author pdbx_ordinal="2">
+	         <PDBx:name>Caaveiro, J.M.M.</PDBx:name>
+	      </PDBx:audit_author>
+	      <PDBx:audit_author pdbx_ordinal="3">
+	         <PDBx:name>Tsumoto, K.</PDBx:name>
+	      </PDBx:audit_author>
+	   </PDBx:audit_authorCategory>
+
+	   <PDBx:cellCategory>
+	      <PDBx:cell entry_id="3QUG">
+	         <PDBx:Z_PDB>8</PDBx:Z_PDB>
+	         <PDBx:angle_alpha>90.000</PDBx:angle_alpha>
+	         <PDBx:angle_beta>90.000</PDBx:angle_beta>
+	         <PDBx:angle_gamma>90.000</PDBx:angle_gamma>
+	         <PDBx:length_a>49.203</PDBx:length_a>
+	         <PDBx:length_b>70.120</PDBx:length_b>
+	         <PDBx:length_c>75.422</PDBx:length_c>
+	      </PDBx:cell>
+	   </PDBx:cellCategory>
+	   <PDBx:chem_compCategory>
+	      <PDBx:chem_comp id="GLN">
+	         <PDBx:formula>C5 H10 N2 O3</PDBx:formula>
+	         <PDBx:formula_weight>146.146</PDBx:formula_weight>
+	         <PDBx:mon_nstd_flag>y</PDBx:mon_nstd_flag>
+	         <PDBx:name>GLUTAMINE</PDBx:name>
+	         <PDBx:type>L-peptide linking</PDBx:type>
+	      </PDBx:chem_comp>
+	      <PDBx:chem_comp id="LEU">
+	         <PDBx:formula>C6 H13 N O2</PDBx:formula>
+	         <PDBx:formula_weight>131.174</PDBx:formula_weight>
+	         <PDBx:mon_nstd_flag>y</PDBx:mon_nstd_flag>
+	         <PDBx:name>LEUCINE</PDBx:name>
+	         <PDBx:type>L-peptide linking</PDBx:type>
+	      </PDBx:chem_comp>
+
+
+二，原子占有率（Occupancy）：
+	晶体中原子占有率的意思，简单的讲就是在该原子所显示的位点，该原子的占有比例，范围0-100%，如果全部由一个原子占有，那么占有率就是100%，有时候晶体会出现原子的共同占据或部分占据的情况，对于共同占据，就是一个位点由2个或2个以上的原子占据，那么就会出现2个或2个以上的原子的占有率的情况，这2个或2个以上的原子的占有率加起来还是等于100%，而对于部分占据，就是该位点的原子的占有率小于100%
+三，温度因子（temperature factor）
+	温度因子（也称为温度系数或B系数）可量化每个原子的不确定性。在蛋白质晶体的典型分辨率下（无法从B值中区分出占有率），一个高的温度值反映了低的电子密度。通常温度值在30平方埃以下，说明其位置是可信的；当温度因子高于60平方埃，则表示无序。
+四。静态无序和动态无序
+
+	静态无序：分子的某些区域在不同的拷贝中有着不同的构象。
+
+	动态无序：每个分子拷贝的一些区域可能会受热而运动，它们相对于其余位置而摆动。当用液氮非常快速地冻结晶体时，大的热运动就会停止，这是进行X光衍射前的一般步骤。通常，蛋白质晶体在被X光照射时会保持在冰点以下，尽管辐照会使晶体变热，从而产生一些热运动。
+五。PDB格式中atom name的含义：
+
+	注意到, 每一行(记录)都以记录类型ATOM开始, 记录中的下一项是原子序号.
+	原子名称是ATOM记录中的第三项, 它的前一或二个字符包含原子类型的元素符号. 所有以C开始的原子名称都代表碳原子, 同理, N代表氮原子, O代表氧原子. 原子名称的下一字符为远程标识符, 表示离氨基碳原子的远近, 含义如下
+
+	A: α
+
+	B: β
+
+	G: γ
+
+	D: δ
+
+	E: ε
+
+	Z: ζ
+
+	H: η
+
+	如果需要, 原子名称的最后一个字符可以代表分支标识符.
+
+六。蛋白质的组成元素
+	组成成分：
+	蛋白质是由C（碳）、H（氢）、O（氧）、N（氮）组成，一般蛋白质可能还会含有P（磷）、S（硫）、Fe（铁）、Zn（锌）、Cu（铜）、B（硼）、Mn(锰)、I（碘）、Mo（钼）等。
+
+七。球状蛋白质
+球状蛋白质是一类蛋白质，它与纤维状蛋白质和膜蛋白共同构成按分子性状和溶解性分出的三个蛋白质子类。球状蛋白质一般呈球状，结构紧密，溶于水
+
+
+八。按照研究室的教程安装R语言和bioconductor时遇到的一些问题
+
+安装时去R语言官网下载就可以安装成功
+
+安装bioconductor时因为版本更新，教程中的命令已经不起作用，提示去bioconductor官方看下载命令，记录如下：
+###
+从相应网站下载biocmanager安装包
+###
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+###
+安装biocmanager
+###
+BiocManager::install()
+
+###
+给biocmanager安装包
+###
+eg.安装 “GenomicFeatures” and “AnnotationDbi”
+BiocManager::install(c("GenomicFeatures", "AnnotationDbi"))
+
+研究室教程中安装了Biostrings这个包
+BiocManager::install(c("Biostrings"))
+
+接下来就按研究室教程走就可以了。
+
+九。R语言的使用
+
+(1)导入一个library
+	library(Biostrings)#导入一个库--Biostrings
+(2)比较两个DNA序列
+	s1 <- DNAString("CTAAGGGATTCCGGTAATTAGACAG")    
+	s2 <- DNAString("ATAGACCATATGTCAGTGACTGTGTAA")  #声明两个DNA序列
+	#指定了匹配和不匹配时的award和penalty
+	#baseOnly是指是否只使用基础字母表中的字母eg.A C G T
+	mat <- nucleotideSubstitutionMatrix(match = 1, mismatch = -2, baseOnly = TRUE)
+	#会自动生成一个惩罚奖赏矩阵，标注了每个字母遇到其他字母时的score
+	#上面这条语句执行后生成的矩阵：
+	#   A  C  G  T
+	#A  1 -2 -2 -2
+	#C -2  1 -2 -2
+	#G -2 -2  1 -2
+	#T -2 -2 -2  1
+	#pairwiseAlignment使用上面这个惩罚奖赏矩阵对s1和s2的相似程度进行了打分
+	pairwiseAlignment(s1, s2, substitutionMatrix = mat)
+(3)比较氨基酸序列
+	不同于上面的使用nucleotideSubstitutionMatrix生成一个奖罚矩阵
+	使用PAM或者BLOSUM矩阵来进行打分
+	s3 <- AAString("SHIMANEKEN")
+	s4 <- AAString("WAKAYAMAKEN")
+	data(BLOSUM62)                #
+	pairwiseAlignment(s3, s4, substitutionMatrix = "BLOSUM62")
+
+十。配列解析 
+比较序列的方法（对比两个序列的相似度）
+（1）dot plot方法
+（2）alignment方法（对于文本序列较为便利）
+	对于alignment方法，就是要做一件事情，
+	给定两个待比较的序列，需要找到一种对齐方法使得两个序列能够匹配最多字母（可以包含gap）
+	这个对齐就叫做Pairwise Global Alignment
+	eg.给定两个序列   TREE   vs. REED
+	可以举出两种对齐方法作为举例
+	TREE             TREE-
+	REED             -REED
+	可以看出后者显然能匹配更多的字母，所以后者是一个更优的Alignment，这个就是Pairwise Global Alignment
+
+	可以使用Needleman-Wunsch Algorithm来找到两个序列的Pairwise Global Alignment(基于动态规划)
+
+(3)得分矩阵（九 中给氨基酸序列打分的得分矩阵---PAM和BLOSUM）
+
+[1]PAM-n 得分矩阵
+基于点突变的思想，假如某两种氨基酸在自然界中替换频繁，说明自然界接受这种氨基酸替换，那么在比对中可以看作这两种氨基酸相对较可能相互替代，得分就会越高。
+
+-PAM得分矩阵基于这种思想，经过一系列的相对突变率和标准化等计算，得出了一个PAM-1得分矩阵，一个PAM就是一个变异单位，即1%的氨基酸改变了（但不代表100次PAM后所有的氨基酸都改变了，有的氨基酸可能改变多次甚至可能变回原来的氨基酸）
+-将PAM-1自乘N次便得到了PAM-N得分矩阵，PAM-N得分矩阵反映了相距N个PAM的氨基酸对之间互相替换的频率
+-针对不同的进化距离采用不同的PAM矩阵，越是相似的序列应该采用N较小的PAM矩阵
+相似度       PAM-N
+14%~27%      PAM-250
+27%~40%      PAM-120
+40%~50%      PAM-80
+60%<=        PAM60
+
+[2]BLOSUM矩阵
+- 用于产生矩阵的蛋白质家族及多肽链数目，BLOSUM比PAM多了大约20倍
+- 与PAM的计算方法不同，PAM使用了global alignment，BLOSUM使用了local alignment
+- BLOSUM后面的数字衡量了两个序列的相似程度，数字越大的BLOSUM用于越相似的序列中
+
+十一。python复健
+-更简洁的对字典进行初始化
+                            key     value
+count_dict = {}.fromkeys(nucleotide, 0)
+用key的list和value进行初始化
+
+
+-对数组进行排序，返回从小到大排列时的元素的index（使用numpy）
+sorted_index = entropy.argsort()
+
+十二。信息论
+
+-信息量（情報量）：当一件几率事件发生时，信息量衡量了这个几率事件有多难发生
+ 计算            I(E) = -log(P(E))
+
+-信息熵计算：-ΣP(E)log(p(E)) （对全集Ω的每一个子事件计算并加和）
+
+
+十三。机器学习基本知识
+
+TP(True Positive)  真病，检测出来有病
+FP(False Positive) 其实没病，检测出来有病
+FN(False Negative) 真病，检测出来没病
+TN(True Negative)  其实没病，检测出来没病
+
+（1）Accuracy（正答率），被正确预测的占全部的比例 即：（TP+TN）/total
+（2）Precision（適合率），在预测是positive中，真正的positive占多少，即：TP/（TP+FP）
+（3）Recall（再現率），真正positive的样本中，预测为positive正确预测的占多少，即：TP/（TP+FN）
+
+*这里Precision和Recall是一个trade-off的关系，有一方上升时，另一方势必下降
+*eg.考虑对疑似患了癌症的患者进行检测，癌症如果有漏检后果十分严重，所以宁愿让FP更多一点，
+*这时Precision会变得很小，Recall就会变得比较大，极端情况FN会等于0，Recall=1.00
+
+这两个到底用哪一个是比较难确定的，在实作的时候通常用Precision和Recall的调和平均数F-measure
+（4）F-measure
+F-measure = 2*Precision*Recall/(Precision + Recall)
+
+（5）PR曲线
+
+
