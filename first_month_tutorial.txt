@@ -222,6 +222,16 @@ count_dict = {}.fromkeys(nucleotide, 0)
 -对数组进行排序，返回从小到大排列时的元素的index（使用numpy）
 sorted_index = entropy.argsort()
 
+-matplotlib的使用
+①使用np生成一系列x的取值eg.x = np.arange(0.01, 100, 0.1)
+②写出y的表达式eg.precision = 4000*x/(4000*x + 0)
+③声明表名，x轴名，y轴名并显示
+plt.title("F-measure")
+plt.xlabel("x")
+plt.ylabel("F-measure")
+plt.plot(x, f_measure)
+plt.show()
+
 十二。信息论
 
 -信息量（情報量）：当一件几率事件发生时，信息量衡量了这个几率事件有多难发生
@@ -250,5 +260,7 @@ TN(True Negative)  其实没病，检测出来没病
 F-measure = 2*Precision*Recall/(Precision + Recall)
 
 （5）PR曲线
-
+描绘了precision和Recall的变化关系
+当给定样本的positive比率，模型预测为positive的比率是x，可以写出以x为自变量的precision和recall，即可得到PR曲线
+（6）ROC曲线
 
