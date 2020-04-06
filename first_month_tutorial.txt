@@ -264,3 +264,19 @@ F-measure = 2*Precision*Recall/(Precision + Recall)
 当给定样本的positive比率，模型预测为positive的比率是x，可以写出以x为自变量的precision和recall，即可得到PR曲线
 （6）ROC曲线
 
+十四。MD simulation
+1.topology file
+MD基本的想法是，首先一个大前提--将构成蛋白质等生物分子的原子视作是一个球棍模型，
+其中，对于三个原子相互连接的球棍模型有一个角度，对于4个原子的模型有一个二面角，这些角度控制着分子的平面性。
+
+并且，例如就算是都属于碳原子的sp3碳和sp2碳的行为都大不相同，所以对每个原子设定适当的参数也是必要的。
+
+由于蛋白质的MD simulation中只有20种氨基酸，就算只对每种氨基酸设定统一的参数也没有什么大问题，这些个氨基酸的参数集合（parameter set），就叫做力场（forcefield），已经被标准化为library。
+
+使用了这个forcefield对蛋白质进行MD simulation
+
+2.missing field
+生物分子中，有一段氨基酸片段，由于附近的电子云，导致这一段氨基酸的具体坐标无法确定，在PDB文件中没有记载坐标信息，所以在MD simulation中必须要把这一部分给补全。
+
+3.Modeller
+使用Modeller可以将缺失的坐标信息补全
